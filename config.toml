@@ -1,0 +1,4 @@
+baseURL = "http://andrewsweeney.net/"
+languageCode = "en-us"
+title = "Andrew Sweeney"
+theme = "hemingway2"
