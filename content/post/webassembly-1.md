@@ -1,9 +1,9 @@
 ---
 title: "LLVM to WASM"
 date: 2018-02-10T13:17:46-05:00
-draft: true
-tags: ["preview", "Syntax Highlighting", "tag-5"]
-categories: ["Syntax Highlighting"]
+draft: false
+tags: ["WebAssembly", "LLVM"]
+categories: ["WebAssembly"]
 toc: true 
 ---
 
