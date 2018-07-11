@@ -3,7 +3,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://andrewsweeney.net/post/webassembly-1/</loc>
+    <lastmod>2018-02-10T13:17:46-05:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>http://andrewsweeney.net/</loc>
+    <lastmod>2018-02-10T13:17:46-05:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0</priority>
   </url>
@@ -15,7 +23,36 @@
   </url>
   
   <url>
+    <loc>http://andrewsweeney.net/tags/llvm/</loc>
+    <lastmod>2018-02-10T13:17:46-05:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://andrewsweeney.net/post/</loc>
+    <lastmod>2018-02-10T13:17:46-05:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://andrewsweeney.net/tags/</loc>
+    <lastmod>2018-02-10T13:17:46-05:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://andrewsweeney.net/tags/webassembly/</loc>
+    <lastmod>2018-02-10T13:17:46-05:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://andrewsweeney.net/categories/webassembly/</loc>
+    <lastmod>2018-02-10T13:17:46-05:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0</priority>
   </url>

@@ -6,9 +6,28 @@
     <description>Recent content in Tags on Andrew Sweeney</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
+    <lastBuildDate>Sat, 10 Feb 2018 13:17:46 -0500</lastBuildDate>
     
 	<atom:link href="http://andrewsweeney.net/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Llvm</title>
+      <link>http://andrewsweeney.net/tags/llvm/</link>
+      <pubDate>Sat, 10 Feb 2018 13:17:46 -0500</pubDate>
+      
+      <guid>http://andrewsweeney.net/tags/llvm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Webassembly</title>
+      <link>http://andrewsweeney.net/tags/webassembly/</link>
+      <pubDate>Sat, 10 Feb 2018 13:17:46 -0500</pubDate>
+      
+      <guid>http://andrewsweeney.net/tags/webassembly/</guid>
+      <description></description>
+    </item>
     
   </channel>
 </rss>
