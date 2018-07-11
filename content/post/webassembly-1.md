@@ -9,16 +9,14 @@ toc: true
 
 # Quick Overview of WebAssembly
 
-Web assembly (WASM) is an assembly language that targets the JavaScript virtual machine.  It can be run in both modern web browsers as well as other environments  such as `node` or `js`. The primary advantage of WASM over traditional JavaScript is performance.  How can WASM be faster than JavaScript if it runs on the same VM? There are many reasons to why WebAssembly _could_ be faster and I am not going to go into them all here, but one of the primary reason is that you normally use a compiler to convert some higher level language such as C/C++ to WebAssembly.  All of the standard optimizations that you would expect from a good compiler will be applied prior to making use of the VM JIT optimizations.
-
-
+Web assembly (WASM) is an assembly language that targets the JavaScript virtual machine.  It can be run in both modern web browsers as well as other environments such as `node` or `js`.  Although JavaScript might not be everyone’s favorite language its usage is omnipresent, and ton of time and effort has been put into making the underlying VM performant.  WASM opens the doors to this VM allowing other languages to use it as their target environment.  Simply put this will allow languages like C/C++/etc. to be compiled to WASM and executed within your web browser.  This also provides an opportunity for new performance improvements since we can now use battle tested Ahead of Time (AOT) compilers like LLVM and still make use of the standard VM Just in Time (JIT) optimizations.
 
 # helloworld.c to WASM the Hard Way
 
-We will be using Clang/LLVM to compile C/C++ to WASM.  At the time of writing this the WASM target architecture is an Experimental backend and not enabled in (most/all?) default distributions.  So below are the setups to build clang/llvm from master with the WASM backend enabled.
+At the time of writing this the WASM target architecture is an Experimental backend and not enabled in (most/all?) default distributions.  Below are the setups to build Clang/LLVM from master with the WASM backend target enabled.
 
 
-Can check if your clang/llvm supports WASM by checking if `wasm32` is a registered target backend in the `LLVM static compiler`.
+You can see if your Clang/LLVM supports WASM by checking if `wasm32` is a registered target backend in the `LLVM static compiler` llc.  The output below is the registered targerts that ship with my system and you can see that `wasm32` is missing. Luckily building llvm/clang from source is not as daunting as it might seem. 
 
 ```bash
 $ llc --version
@@ -63,8 +61,6 @@ LLVM (http://llvm.org/):
     xcore      - XCore
 ```
 
-As you can see above there isn't a `wasm` target listed.  Luckily building llvm/clang from source is not as daunting as it might seem. 
-
 
 ## Building Clang/LLVM With WASM Backend
 
@@ -89,13 +85,12 @@ mkdir build
 cd build
 
 # Set install target to $DIR/bin and enable the WebAssembly backend
-
 cmake -DCMAKE_INSTALL_PREFIX=$DIR/bin \
 -DLLVM_TARGETS_TO_BUILD= \
 -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=WebAssembly \
 $DIR/src/llvm 
 
-# 2 * core count
+# Build with 2 * core count
 make -j $(( `grep -c ^processor /proc/cpuinfo` * 2 ))
 
 make install
@@ -104,7 +99,7 @@ make install
 export PATH=$DIR/bin:$PATH
 ```
 
-Now if we run `LLVM static compiler` we should see our WASM backends. 
+Now if we run `LLVM static compiler` we should see WASM a registered backend target. 
 
 ```bash
 $ llc --version
@@ -123,7 +118,7 @@ LLVM (http://llvm.org/):
 # Our helloworld.c
 
 
-Below is the sample helloworld.c that we will be using.
+Below is our helloworld program:
 
 ```C
 extern void out(const char *, int len);
@@ -136,7 +131,7 @@ main(int argc, char *argv[])
 }
 ```
 
-Uhh... This isn't your typical helloworld.  Where is `out` defined?  Why aren't we using `printf` or `puts`?  Well for our simple example here we will be targeting an environment that doesn't actually have a `libc` available for us.  This environment is also missing `POSIX` and your standard OS syscalls.  For now we will simply define an extern function named `out`.  Once we go through the compilation  steps and start interfacing with the browser we will go over how and where this function is defined. 
+As you probably noticed this isn't exactly what you see in your typical helloworld.  Where is `out` defined?  Why aren't we using `printf` or `puts`?  The reason we aren't using standard `POSIX` functions or system calls is that they don't exist in the enviornment we are targeting. By default the VM does not provide a `libc` for us that defines all of the standard functions we know and love.  For now we will simply define an extern function named `out` that we will define late after going through the compilation steps and start interfacing with the browser.
 
 
 ## Building helloworld.c
@@ -153,7 +148,7 @@ $ clang --target=wasm32 -Os helloworld.c -nostdlib -c -o out.wasm
 * `-o`: Write output to dest file
 
 
-Great!  We now have a WebAssembly binary.  But how do I use this thing?  Well first let's examine it.
+Great!  We now have a WebAssembly binary.  But how do we use this thing?  Well first let's take a peek inside:
 
 ```
 $ xxd out.wasm
@@ -177,7 +172,7 @@ $ xxd out.wasm
 00000110: 6461 7461 2e2e 4c2e 7374 7201 00         data..L.str..
 ```
 
-Ok... that wasn't that useful.  Let's convert the binary to some human-readable form.  One of the more popular representations of this is known as `WAT` or the `WebAssembly Text Format`.  It's an interesting way to actually represent the binary since it uses [S-expressions]<https://en.wikipedia.org/wiki/S-expression>.  For this, we will need to use the `wasm2wat` tool that comes with `The WebAssembly Binary Toolkit` (WABT).  
+Ok... that wasn't that useful, but do we see that there are some strings that might be useful.  Let's convert the binary to some human-readable form.  One of the more popular representations of this is known as `WAT` or the `WebAssembly Text Format`.  It's an interesting way to actually represent the binary since it uses [S-expressions]<https://en.wikipedia.org/wiki/S-expression>.  For this, we will need to use the `wasm2wat` tool that comes with `The WebAssembly Binary Toolkit` (WABT).  
 
 ## Building WABT
 
@@ -193,7 +188,7 @@ export PATH=$PWD:$PATH
 
 ## Understanding Our binary - WASM to WAST
 
-Converting our binary to the `WAT` format. I have added some comments here, but in order to better understand this format I suggest you referrer to the official documentation here: <https://developer.mozilla.org/en-US/docs/WebAssembly/Understanding_the_text_format>
+Below is the result of converting our binary to the `WAT` format. I have added some comments that briefly go over each instruction, but for a deeper explination the official documentation can be found here: <https://developer.mozilla.org/en-US/docs/WebAssembly/Understanding_the_text_format>
 
 ```
 $ wasm2wat out.wasm
@@ -217,8 +212,8 @@ $ wasm2wat out.wasm
 ### Imports
 
 1. `env.__linear_memory` - This will reference a `WebAssembly.Memory` object that will be used to back our raw memory store/access. More information on this can be found [here](https://hacks.mozilla.org/2017/07/memory-in-webassembly-and-why-its-safer-than-you-think/)
-1. `env.__indirect_function_table` - This will reference a `WebAssembly.Table` that can be used to store references.  We currently aren't making use of this.  The best resource I have found explaining this can be found [here](https://hacks.mozilla.org/2017/07/webassembly-table-imports-what-are-they/)
-1. `env.out` - This is our out `print` function.  We will need to assign this to something in order to make it actually work.
+2. `env.__indirect_function_table` - This will reference a `WebAssembly.Table` that can be used to store references.  We currently aren't making use of this.  The best resource I have found explaining this can be found [here](https://hacks.mozilla.org/2017/07/webassembly-table-imports-what-are-they/)
+3. `env.out` - This is our out `print` function.  We will need to assign this to something in order to make it actually work, we can see how this will be covered below.
 
 ### Exports
 
@@ -237,7 +232,10 @@ So we now have a WASM binary, but how do we use it? The below snippet shows how 
 4. Setup the module imports
 	1. `env.__linear_memory` Assign this to a `WebAssembly.Memory` model and initalize it to 256 pages.  This is an arbitary ammount and since our example doesn't allocate any memory this shouldn't be an issue. 
 	2. `env.__indirect_function_table` is assignd to a  `WebAssembly.Table`.
-5. Setup our `out` function.  Here you can see us mixing WASM and JavaScript.
+5. Define and setup our `out` function.  
+
+
+Below shows how we are mixing boundries between our WASM binary and standard JavaScript functions. From the C/C++ side you can think of `out` as a symbol that doesn't get resolved until runtime, similiar to a dynamically loaded library.  We can change the behavior of the `out` function without building our WASM binary.    
 
 ```html
 <html>
@@ -318,7 +316,7 @@ Obviously, this is a lot of work just to print "Hello World" to the screen and i
 
 # helloworld.c to WASM the Easy Way
 
-The example above required a lot of steps to get a simple example working.  Not having a `libc` available to use makes porting any code challenging.  Luckily there is already a project that fills this gap: [Emscripten](http://kripken.github.io/emscripten-site).  Emscripten is an entire toolchain/environments that comes with everything you need to get started, including a port of `libc` using [musl](https://www.musl-libc.org/).  It also comes with a few other ports that make porting/building an app targeting WASM easier.  
+The example above required a lot of steps to get a simple example working.  Not having a `libc` available to use makes porting any code challenging.  Luckily there is already a project that fills this gap: [Emscripten](http://kripken.github.io/emscripten-site).  Emscripten is an entire toolchain/environments that comes with everything you need to get started, including a port of `libc` using [musl](https://www.musl-libc.org/).  It also comes with a few other library ports that make porting/building an app targeting WASM easier.
 
 **Available Ports:**
 
