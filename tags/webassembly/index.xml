@@ -13,10 +13,10 @@
     
     <item>
       <title>LLVM to WASM</title>
-      <link>http://andrewsweeney.net/post/webassembly-1/</link>
+      <link>http://andrewsweeney.net/post/llvm-to-wasm/</link>
       <pubDate>Sat, 10 Feb 2018 13:17:46 -0500</pubDate>
       
-      <guid>http://andrewsweeney.net/post/webassembly-1/</guid>
+      <guid>http://andrewsweeney.net/post/llvm-to-wasm/</guid>
       <description>Quick Overview of WebAssembly Web assembly (WASM) is an assembly language that targets the JavaScript virtual machine. It can be run in both modern web browsers as well as other environments such as node or js. Although JavaScript might not be everyone’s favorite language its usage is omnipresent, and ton of time and effort has been put into making the underlying VM performant. WASM opens the doors to this VM allowing other languages to use it as their target environment.</description>
     </item>
     
