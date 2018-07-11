@@ -235,7 +235,7 @@ So we now have a WASM binary, but how do we use it? The below snippet shows how 
 5. Define and setup our `out` function.  
 
 
-Below shows how we are mixing boundries between our WASM binary and standard JavaScript functions. From the C/C++ side you can think of `out` as a symbol that doesn't get resolved until runtime, similiar to a dynamically loaded library.  We can change the behavior of the `out` function without building our WASM binary.    
+Below shows how we are mixing boundaries between our WASM binary and standard JavaScript functions. From the C/C++ side you can think of `out` as a symbol that doesn't get resolved until runtime, similar to a dynamically loaded library.  We can change the behavior of the `out` function without building our WASM binary. 
 
 ```html
 <html>
